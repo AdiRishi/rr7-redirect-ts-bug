@@ -1,40 +1,32 @@
-# React Router v7 Cloudflare Template
+# RR7 redirect Typescript Bug reproduction
 
-This is a template repository for creating a React Router v7 application with Cloudflare Workers.
+This is a reproduction repository for issue https://github.com/remix-run/react-router/issues/12615
 
-You can use this template to quickly set up a new project. This minimal template features
+## Bug description
 
-- React 19
-- Vite 6
-- Prettier formatting
+```
+app/routes/redirect-to-home.tsx:8:17 - error TS4058: Return type of exported function has or is using name 'redirectSymbol' from external module "/Users/arishi/playground/rr7-redirect-ts-bug/node_modules/react-router/dist/development/route-data-aSUFWnQ6" but cannot be named.
 
-## Quick Start
+8 export function loader({ context }: Route.LoaderArgs) {
+                  ~~~~~~
 
-To create a new project using this template, run the following command:
 
-```sh
-npx create-react-router@latest --template AdiRishi/react-router-cloudflare-template
+Found 1 error.
 ```
 
-## Development
+## Steps to reproduce
 
-To deploy the project using vite dev, run:
+Navigate to the `app/routes/redirect-to-home.tsx` file
 
-```sh
-npm run dev
+This file contains a simple loader that redirects to the home page.
+
+```tsx
+import { redirect } from "react-router";
+import { Route } from "./+types/redirect-to-home";
+
+export function loader({ context }: Route.LoaderArgs) {
+  return redirect("/", { status: 302 });
+}
 ```
 
-To run the final build using wrangler locally, run:
-
-```sh
-npm run build
-npm run start
-```
-
-## Deployment
-
-To deploy the project using Wrangler, run:
-
-```sh
-npm run deploy
-```
+You should see the error mentioned above. You can also see it by running `npm run typecheck`.
